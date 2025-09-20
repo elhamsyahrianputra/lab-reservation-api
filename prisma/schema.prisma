@@ -1,0 +1,218 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ----- ENUMS -----
+enum LabStatus {
+  AVAILABLE
+  UNDER_MAINTENANCE
+}
+
+enum ReservationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+enum EquipmentUnitCondition {
+  NEW
+  GOOD
+  FAIR
+  NEED_REPAIR
+  DECOMMISSIONED
+}
+
+enum EquipmentUnitStatus {
+  AVAILABLE
+  ON_LOAN
+  BOOKED
+  UNDER_MAINTENANCE
+  MISSING
+}
+
+enum LoanStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  COMPLETED
+  CANCELLED
+}
+
+// ----- MODELS -----
+
+model User {
+  id                    String  @id @default(uuid()) @db.Uuid
+  name                  String  @db.VarChar(255)
+  email                 String  @unique @db.VarChar(255)
+  password              String  @db.VarChar(255)
+  verified_at           BigInt?
+  auth_token            String? @db.Uuid
+  auth_token_expires_at BigInt?
+  created_at            BigInt
+  updated_at            BigInt?
+
+  roles        UserRole[]
+  reservations Reservation[]
+  loans        Loan[]
+
+  @@map("users")
+}
+
+model Role {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(255)
+  description String? @db.Text
+  created_at  BigInt
+  updated_at  BigInt?
+
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  id         String  @id @default(uuid()) @db.Uuid
+  user_id    String  @db.Uuid
+  role_id    String  @db.Uuid
+  created_at BigInt
+  updated_at BigInt?
+
+  user User @relation(fields: [user_id], references: [id])
+  role Role @relation(fields: [role_id], references: [id])
+
+  @@map("user_role")
+}
+
+model Lab {
+  id          String    @id @default(uuid()) @db.Uuid
+  name        String    @db.VarChar(255)
+  location    String    @db.VarChar(255)
+  description String?   @db.Text
+  status      LabStatus
+  created_at  BigInt
+  updated_at  BigInt?
+
+  inventories  LabInventory[]
+  reservations Reservation[]
+
+  @@map("labs")
+}
+
+model LabInventory {
+  id          String  @id @default(uuid()) @db.Uuid
+  lab_id      String  @db.Uuid
+  name        String  @db.VarChar(255)
+  quantity    Int     @db.SmallInt
+  description String? @db.Text
+  created_at  BigInt
+  updated_at  BigInt?
+
+  lab Lab @relation(fields: [lab_id], references: [id])
+
+  @@map("lab_inventories")
+}
+
+model Reservation {
+  id               String            @id @default(uuid()) @db.Uuid
+  user_id          String            @db.Uuid
+  lab_id           String            @db.Uuid
+  status           ReservationStatus
+  notes            String?           @db.Text
+  booking_start_at BigInt
+  booking_end_at   BigInt
+  check_in_at      BigInt?
+  check_out_at     BigInt?
+  created_at       BigInt
+  updated_at       BigInt?
+
+  user User @relation(fields: [user_id], references: [id])
+  lab  Lab  @relation(fields: [lab_id], references: [id])
+
+  @@map("reservations")
+}
+
+model EquipmentCategory {
+  id          String  @id @default(uuid()) @db.Uuid
+  name        String  @unique @db.VarChar(255)
+  description String? @db.Text
+  created_at  BigInt
+  updated_at  BigInt?
+
+  equipments Equipment[]
+
+  @@map("equipment_categories")
+}
+
+model Equipment {
+  id                    String  @id @default(uuid()) @db.Uuid
+  equipment_category_id String  @db.Uuid
+  name                  String  @db.VarChar(255)
+  description           String? @db.Text
+  image_url             String  @db.VarChar(255)
+  created_at            BigInt
+  updated_at            BigInt?
+
+  categories EquipmentCategory @relation(fields: [equipment_category_id], references: [id])
+  units      EquipmentUnit[]
+
+  @@map("equipments")
+}
+
+model EquipmentUnit {
+  id           String                 @id @default(uuid()) @db.Uuid
+  equipment_id String                 @db.Uuid
+  code         String                 @unique @db.VarChar(255)
+  condition    EquipmentUnitCondition
+  status       EquipmentUnitStatus
+  description  String?                @db.Text
+  purchased_at BigInt?
+  created_at   BigInt
+  updated_at   BigInt?
+
+  equipment Equipment @relation(fields: [equipment_id], references: [id])
+
+  @@map("equipment_units")
+}
+
+model Loan {
+  id            String     @id @default(uuid()) @db.Uuid
+  user_id       String     @db.Uuid
+  notes         String?    @db.Text
+  status        LoanStatus
+  pickup_due_at BigInt
+  return_due_at BigInt
+  pickup_at     BigInt?
+  returned_at   BigInt?
+  created_at    BigInt
+  updated_at    BigInt?
+
+  user  User       @relation(fields: [user_id], references: [id])
+  items LoanItem[]
+
+  @@map("loans")
+}
+
+model LoanItem {
+  id                String  @id @default(uuid()) @db.Uuid
+  loan_id           String  @db.Uuid
+  equipment_unit_id String  @db.Uuid
+  created_at        BigInt
+  updated_at        BigInt?
+
+  loan Loan @relation(fields: [loan_id], references: [id])
+
+  @@map("loan_items")
+}
