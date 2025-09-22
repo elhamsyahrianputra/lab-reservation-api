@@ -22,12 +22,9 @@ export class LabsController {
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() createLabDto: CreateLabDto) {
     const lab = await this.labsService.create(createLabDto);
-
     return {
-      code: HttpStatus.CREATED,
-      status: 'CREATED',
       message: 'Lab created successfully',
-      data: lab,
+      result: lab,
     };
   }
 
@@ -35,25 +32,16 @@ export class LabsController {
   @HttpCode(HttpStatus.OK)
   async findAll() {
     const labs = await this.labsService.getAll();
-
-    return {
-      code: HttpStatus.OK,
-      status: 'OK',
-      message: 'Labs retrieved successfully',
-      data: labs,
-    };
+    return { message: 'Labs retrieved successfully', result: labs };
   }
 
   @Get(':id')
   @HttpCode(HttpStatus.OK)
   async findOne(@Param('id', ParseUUIDPipe) id: string) {
     const lab = await this.labsService.getById(id);
-
     return {
-      code: HttpStatus.OK,
-      status: 'OK',
       message: 'Lab retrieved successfully',
-      data: lab,
+      result: lab,
     };
   }
 
@@ -64,12 +52,9 @@ export class LabsController {
     @Body() updateLabDto: UpdateLabDto,
   ) {
     const updatedLab = await this.labsService.update(id, updateLabDto);
-
     return {
-      code: HttpStatus.OK,
-      status: 'OK',
-      message: 'Lab updatated successfully',
-      data: updatedLab,
+      message: 'Lab updated successfully',
+      result: updatedLab,
     };
   }
 
@@ -77,10 +62,7 @@ export class LabsController {
   @HttpCode(HttpStatus.OK)
   async remove(@Param('id', ParseUUIDPipe) id: string) {
     await this.labsService.delete(id);
-
     return {
-      code: HttpStatus.OK,
-      status: 'OK',
       message: 'Lab deleted successfully',
     };
   }
