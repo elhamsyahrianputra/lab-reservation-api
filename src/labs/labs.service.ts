@@ -5,7 +5,6 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateLabDto } from './dto/create-lab-dto';
-import id from 'zod/v4/locales/id.js';
 import { Prisma } from '@prisma/client';
 import { UpdateLabDto } from './dto/update-lab-dto';
 
@@ -15,13 +14,11 @@ export class LabsService {
 
   async create(createLabDto: CreateLabDto) {
     try {
-      const dataToCreate = {
-        ...createLabDto,
-        created_at: BigInt(Date.now()),
-      };
-
       return await this.prisma.lab.create({
-        data: dataToCreate,
+        data: {
+          ...createLabDto,
+          created_at: BigInt(Date.now()),
+        },
       });
     } catch (error) {
       if (
