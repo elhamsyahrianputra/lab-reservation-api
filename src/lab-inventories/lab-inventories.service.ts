@@ -1,0 +1,98 @@
+import { PrismaService } from 'src/prisma/prisma.service';
+import { CreateLabInventoryDto } from './dto/create-lab-inventory-dto';
+import { Prisma } from '@prisma/client';
+import {
+    ConflictException,
+    Injectable,
+    NotFoundException,
+} from '@nestjs/common';
+import { UpdateLabInventoryDto } from './dto/update-lab-inventory-dto';
+
+@Injectable()
+export class LabInventoriesService {
+    constructor(private prisma: PrismaService) {}
+
+    async create(createLabInventoryDto: CreateLabInventoryDto) {
+        try {
+            return await this.prisma.labInventory.create({
+                data: {
+                    ...createLabInventoryDto,
+                    created_at: BigInt(Date.now()),
+                },
+            });
+        } catch (error) {
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === 'P2002'
+            ) {
+                throw new ConflictException(
+                    `Lab with name '${createLabInventoryDto.name}' already exists.`,
+                );
+            }
+            throw error;
+        }
+    }
+
+    async getAll() {
+        return await this.prisma.labInventory.findMany();
+    }
+
+    async getById(id: string) {
+        const inventory = await this.prisma.labInventory.findUnique({
+            where: {
+                id,
+            },
+        });
+
+        if (!inventory) {
+            throw new NotFoundException(`Lab with ID '${id}' not found`);
+        }
+
+        return inventory;
+    }
+
+    async update(id: string, updateLabInventoryDto: UpdateLabInventoryDto) {
+        try {
+            const updatedLab = await this.prisma.labInventory.update({
+                where: {
+                    id: id,
+                },
+                data: {
+                    ...updateLabInventoryDto,
+                    updated_at: BigInt(Date.now()),
+                },
+            });
+            return updatedLab;
+        } catch (error) {
+            if (
+                error instanceof Prisma.PrismaClientKnownRequestError &&
+                error.code === 'P2002'
+            ) {
+                throw new ConflictException(
+                    `Lab with name '${updateLabInventoryDto.name}`,
+                );
+            }
+            throw error;
+        }
+    }
+
+    async delete(id: string) {
+        const inventory = await this.prisma.labInventory.findUnique({
+            where: {
+                id: id,
+            },
+        });
+
+        if (!inventory) {
+            throw new NotFoundException(
+                `Lab inventory with ID '${id}' not found`,
+            );
+        }
+
+        await this.prisma.labInventory.delete({
+            where: {
+                id: id,
+            },
+        });
+    }
+}
