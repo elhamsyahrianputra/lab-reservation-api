@@ -39,9 +39,7 @@ export class LabsService {
 
     async getById(id: string) {
         const lab = await this.prisma.lab.findUnique({
-            where: {
-                id: id,
-            },
+            where: { id },
         });
 
         if (!lab) {
@@ -55,23 +53,20 @@ export class LabsService {
         await this.getById(id);
 
         try {
-            const updatedLab = await this.prisma.lab.update({
-                where: {
-                    id: id,
-                },
+            return await this.prisma.lab.update({
+                where: { id },
                 data: {
                     ...updateLabDto,
                     updated_at: BigInt(Date.now()),
                 },
             });
-            return updatedLab;
         } catch (error) {
             if (
                 error instanceof Prisma.PrismaClientKnownRequestError &&
                 error.code === 'P2002'
             ) {
                 throw new ConflictException(
-                    `Lab with name '${updateLabDto.name}`,
+                    `Lab with name '${updateLabDto.name}' already exists.`,
                 );
             }
             throw error;
@@ -79,10 +74,10 @@ export class LabsService {
     }
 
     async delete(id: string) {
+        await this.getById(id);
+
         await this.prisma.lab.delete({
-            where: {
-                id,
-            },
+            where: { id },
         });
     }
 }

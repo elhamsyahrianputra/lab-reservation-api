@@ -39,9 +39,7 @@ export class LabInventoriesService {
 
     async getById(id: string) {
         const inventory = await this.prisma.labInventory.findUnique({
-            where: {
-                id,
-            },
+            where: { id },
         });
 
         if (!inventory) {
@@ -54,9 +52,7 @@ export class LabInventoriesService {
     async update(id: string, updateLabInventoryDto: UpdateLabInventoryDto) {
         try {
             const updatedLab = await this.prisma.labInventory.update({
-                where: {
-                    id: id,
-                },
+                where: { id },
                 data: {
                     ...updateLabInventoryDto,
                     updated_at: BigInt(Date.now()),
@@ -77,17 +73,7 @@ export class LabInventoriesService {
     }
 
     async delete(id: string) {
-        const inventory = await this.prisma.labInventory.findUnique({
-            where: {
-                id: id,
-            },
-        });
-
-        if (!inventory) {
-            throw new NotFoundException(
-                `Lab inventory with ID '${id}' not found`,
-            );
-        }
+        await this.getById(id);
 
         await this.prisma.labInventory.delete({
             where: {
