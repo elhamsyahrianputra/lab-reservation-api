@@ -182,7 +182,8 @@ model EquipmentUnit {
   created_at   BigInt
   updated_at   BigInt?
 
-  equipment Equipment @relation(fields: [equipment_id], references: [id])
+  equipment  Equipment  @relation(fields: [equipment_id], references: [id])
+  loan_items LoanItem[]
 
   @@map("equipment_units")
 }
@@ -212,7 +213,8 @@ model LoanItem {
   created_at        BigInt
   updated_at        BigInt?
 
-  loan Loan @relation(fields: [loan_id], references: [id])
+  loan           Loan          @relation(fields: [loan_id], references: [id])
+  equipment_unit EquipmentUnit @relation(fields: [equipment_unit_id], references: [id])
 
   @@map("loan_items")
 }

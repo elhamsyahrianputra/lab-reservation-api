@@ -13,6 +13,7 @@ import {
 import { LabInventoriesService } from './lab-inventories.service';
 import { CreateLabInventoryDto } from './dto/create-lab-inventory-dto';
 import { UpdateLabInventoryDto } from './dto/update-lab-inventory-dto';
+import { Roles } from 'src/auth/decorators/roles.decorator';
 
 @Controller('lab-inventories')
 export class LabInventoriesController {
@@ -20,6 +21,7 @@ export class LabInventoriesController {
         private readonly labInventoriesService: LabInventoriesService,
     ) {}
 
+    @Roles('admin')
     @Post()
     @HttpCode(HttpStatus.CREATED)
     async create(@Body() createLabInventoryDto: CreateLabInventoryDto) {
@@ -33,6 +35,7 @@ export class LabInventoriesController {
         };
     }
 
+    @Roles('admin')
     @Get()
     @HttpCode(HttpStatus.OK)
     async findAll() {
@@ -44,6 +47,7 @@ export class LabInventoriesController {
         };
     }
 
+    @Roles('admin')
     @Get(':id')
     @HttpCode(HttpStatus.OK)
     async findOne(@Param('id', ParseUUIDPipe) id: string) {
@@ -55,6 +59,7 @@ export class LabInventoriesController {
         };
     }
 
+    @Roles('admin')
     @Put(':id')
     @HttpCode(HttpStatus.OK)
     async update(
@@ -72,11 +77,12 @@ export class LabInventoriesController {
         };
     }
 
+    @Roles('admin')
     @Delete(':id')
     @HttpCode(HttpStatus.OK)
     async delete(@Param('id', ParseUUIDPipe) id: string) {
         await this.labInventoriesService.delete(id);
-        
+
         return {
             message: 'Lab inventory deleted successfully',
         };
