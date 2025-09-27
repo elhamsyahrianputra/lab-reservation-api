@@ -23,6 +23,7 @@ enum ReservationStatus {
   PENDING
   APPROVED
   REJECTED
+  IN_PROGRESS
   COMPLETED
   CANCELLED
 }
@@ -122,21 +123,22 @@ model LabInventory {
 
   lab Lab @relation(fields: [lab_id], references: [id])
 
+  @@unique([lab_id, name], name: "unique_lab_inventory_name")
   @@map("lab_inventories")
 }
 
 model Reservation {
-  id               String            @id @default(uuid()) @db.Uuid
-  user_id          String            @db.Uuid
-  lab_id           String            @db.Uuid
-  status           ReservationStatus
-  notes            String?           @db.Text
-  booking_start_at BigInt
-  booking_end_at   BigInt
-  check_in_at      BigInt?
-  check_out_at     BigInt?
-  created_at       BigInt
-  updated_at       BigInt?
+  id           String            @id @default(uuid()) @db.Uuid
+  user_id      String            @db.Uuid
+  lab_id       String            @db.Uuid
+  status       ReservationStatus
+  notes        String?           @db.Text
+  booking_at   BigInt
+  duration     Int
+  check_in_at  BigInt?
+  check_out_at BigInt?
+  created_at   BigInt
+  updated_at   BigInt?
 
   user User @relation(fields: [user_id], references: [id])
   lab  Lab  @relation(fields: [lab_id], references: [id])

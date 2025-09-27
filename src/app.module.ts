@@ -3,8 +3,15 @@ import { PrismaModule } from './prisma/prisma.module';
 import { LabsModule } from './labs/labs.module';
 import { AuthModule } from './auth/auth.module';
 import { LabInventoriesModule } from './lab-inventories/lab-inventories.module';
+import { ReservationModule } from './reservations/reservations.module';
 @Module({
-    imports: [PrismaModule, LabsModule, AuthModule, LabInventoriesModule],
+    imports: [
+        PrismaModule,
+        LabsModule,
+        AuthModule,
+        LabInventoriesModule,
+        ReservationModule,
+    ],
     controllers: [],
     providers: [],
 })
