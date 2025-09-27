@@ -8,4 +8,4 @@ import { LabsModule } from 'src/labs/labs.module';
     providers: [ReservationService],
     imports: [LabsModule],
 })
-export class ReservationModule {}
+export class ReservationsModule {}
