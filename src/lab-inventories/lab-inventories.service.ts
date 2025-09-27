@@ -7,12 +7,20 @@ import {
     NotFoundException,
 } from '@nestjs/common';
 import { UpdateLabInventoryDto } from './dto/update-lab-inventory-dto';
+import { LabsService } from 'src/labs/labs.service';
 
 @Injectable()
 export class LabInventoriesService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private readonly labsService: LabsService,
+    ) {}
 
     async create(createLabInventoryDto: CreateLabInventoryDto) {
+        const lab = await this.labsService.getById(
+            createLabInventoryDto.lab_id,
+        );
+
         try {
             return await this.prisma.labInventory.create({
                 data: {
@@ -26,7 +34,7 @@ export class LabInventoriesService {
                 error.code === 'P2002'
             ) {
                 throw new ConflictException(
-                    `Lab with name '${createLabInventoryDto.name}' already exists.`,
+                    `Lab inventory '${createLabInventoryDto.name}' already exist in lab '${lab.name}'.`,
                 );
             }
             throw error;
@@ -65,7 +73,7 @@ export class LabInventoriesService {
                 error.code === 'P2002'
             ) {
                 throw new ConflictException(
-                    `Lab with name '${updateLabInventoryDto.name}`,
+                    `Lab inventory with name '${updateLabInventoryDto.name}`,
                 );
             }
             throw error;

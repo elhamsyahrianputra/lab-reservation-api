@@ -3,7 +3,8 @@ import { LabsController } from './labs.controller';
 import { LabsService } from './labs.service';
 
 @Module({
-  controllers: [LabsController],
-  providers: [LabsService],
+    controllers: [LabsController],
+    providers: [LabsService],
+    exports: [LabsService],
 })
 export class LabsModule {}

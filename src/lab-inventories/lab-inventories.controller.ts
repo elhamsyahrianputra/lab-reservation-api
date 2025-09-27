@@ -9,12 +9,16 @@ import {
     ParseUUIDPipe,
     Post,
     Put,
+    UseGuards,
 } from '@nestjs/common';
 import { LabInventoriesService } from './lab-inventories.service';
 import { CreateLabInventoryDto } from './dto/create-lab-inventory-dto';
 import { UpdateLabInventoryDto } from './dto/update-lab-inventory-dto';
 import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
 
+@UseGuards(AuthGuard, RolesGuard)
 @Controller('lab-inventories')
 export class LabInventoriesController {
     constructor(

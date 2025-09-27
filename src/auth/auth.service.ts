@@ -59,6 +59,13 @@ export class AuthService {
 
         const user = await this.prisma.user.findUnique({
             where: { email },
+            include: {
+                roles: {
+                    include: {
+                        role: true,
+                    },
+                },
+            },
         });
 
         if (!user) {
@@ -82,11 +89,14 @@ export class AuthService {
             },
         });
 
+        const roleNames = user.roles.map((userRole) => userRole.role.name);
+
         return {
             id: user.id,
             name: user.name,
             email: user.email,
             auth_token: authToken,
+            role: roleNames,
         };
     }
 }
