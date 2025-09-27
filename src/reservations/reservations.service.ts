@@ -8,12 +8,18 @@ import {
 import { Prisma, ReservationStatus } from '@prisma/client';
 import { UpdateLabDto } from 'src/labs/dto/update-lab-dto';
 import { UpdateReservationDto } from './dto/update-reservation-dto';
+import { LabsService } from 'src/labs/labs.service';
 
 @Injectable()
 export class ReservationService {
-    constructor(private prisma: PrismaService) {}
+    constructor(
+        private prisma: PrismaService,
+        private labsService: LabsService,
+    ) {}
 
     async create(createReservationDto: CreateReservationDto) {
+        await this.labsService.getById(createReservationDto.lab_id);
+
         return await this.prisma.reservation.create({
             data: {
                 ...createReservationDto,
