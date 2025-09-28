@@ -6,6 +6,7 @@ import { LabInventoriesModule } from './lab-inventories/lab-inventories.module';
 import { ReservationsModule } from './reservations/reservations.module';
 import { EquipmentCategoriesModule } from './equipment-categories/equipment-categories.module';
 import { EquipmentsModule } from './equipments/equipments.module';
+import { EquipmentUnitsModule } from './equipment-units/equipment-units.module';
 @Module({
     imports: [
         PrismaModule,
@@ -15,6 +16,7 @@ import { EquipmentsModule } from './equipments/equipments.module';
         ReservationsModule,
         EquipmentCategoriesModule,
         EquipmentsModule,
+        EquipmentUnitsModule,
     ],
     controllers: [],
     providers: [],
