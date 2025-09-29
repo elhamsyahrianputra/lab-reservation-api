@@ -7,6 +7,7 @@ import { ReservationsModule } from './reservations/reservations.module';
 import { EquipmentCategoriesModule } from './equipment-categories/equipment-categories.module';
 import { EquipmentsModule } from './equipments/equipments.module';
 import { EquipmentUnitsModule } from './equipment-units/equipment-units.module';
+import { LoansModule } from './loans/loans.module';
 @Module({
     imports: [
         PrismaModule,
@@ -17,6 +18,7 @@ import { EquipmentUnitsModule } from './equipment-units/equipment-units.module';
         EquipmentCategoriesModule,
         EquipmentsModule,
         EquipmentUnitsModule,
+        LoansModule,
     ],
     controllers: [],
     providers: [],

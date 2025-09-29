@@ -48,6 +48,7 @@ enum LoanStatus {
   PENDING
   APPROVED
   REJECTED
+  IN_PROGRESS
   COMPLETED
   CANCELLED
 }
@@ -137,6 +138,7 @@ model Reservation {
   duration     Int
   check_in_at  BigInt?
   check_out_at BigInt?
+  reason       String?           @db.Text
   created_at   BigInt
   updated_at   BigInt?
 
@@ -199,6 +201,7 @@ model Loan {
   return_due_at BigInt
   pickup_at     BigInt?
   returned_at   BigInt?
+  reason        String?    @db.Text
   created_at    BigInt
   updated_at    BigInt?
 
