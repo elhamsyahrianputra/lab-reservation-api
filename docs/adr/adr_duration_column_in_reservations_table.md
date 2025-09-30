@@ -1,10 +1,10 @@
 ---
 title: 'Strategi Penyimpanan Durasi di Column Reservations'
-status: proposed
-date: YYYY-MM-DD
-decision-makers: [List of people involved in the decision]
-consulted: [List of people whose opinions are sought]
-informed: [List of people kept informed of progress]
+status: accepted
+date: 2025-09-30
+decision-makers: [Elham Syahrian Putra]
+consulted: [N/A]
+informed: [N/A]
 ---
 
 # Strategi Penyimpanan Durasi di Column Reservations
@@ -54,18 +54,20 @@ Karena secara intuitif durasi sangat erat berhubungan 'berapa lama' alih alih 's
 ### Opsi A - Menggunakan kombinasi column _start_at_ dan _duration_
 
 **Kelebihan**
+
 - Berapa lama durasi yang dibutuhkan sangat jelas terlihat
 - Pengelolaan lebih mudah, karena tipe datanya `int`
 
-
 **Kekurangan**
+
 - Untuk menentukan berakhirnya reseravsi, harus dilakukan konversi terlebih dahulu dan dihitung secara manual dengan menjumlah start_at + duration (setelah di konversi)
 
 ### Opsi B - Menggunakan kombinasi column _start_at_ dan _end_at_
 
 **Kelebihan**
-- Sangat jelas ketika fokusnya adalah 'kapan berkahir-nya'  sebuah `reservation`
 
+- Sangat jelas ketika fokusnya adalah 'kapan berkahir-nya' sebuah `reservation`
 
 **Kekurangan**
+
 - Harus menghitung terlebih dahulu jika ingin mengetahui berapa lama (durasi) dari `reservation`
