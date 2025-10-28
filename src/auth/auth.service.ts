@@ -96,6 +96,7 @@ export class AuthService {
             name: user.name,
             email: user.email,
             auth_token: authToken,
+            auth_token_expires_at: authTokenExpiresAt,
             role: roleNames,
         };
     }

@@ -8,10 +8,29 @@ export class LoansService {
     constructor(private prisma: PrismaService) {}
 
     async create(createLoanDto: CreateLoanDto) {
+        const { items, ...loanData } = createLoanDto;
+
         return await this.prisma.loan.create({
             data: {
-                ...createLoanDto,
+                ...loanData,
                 created_at: BigInt(Date.now()),
+                items: {
+                    create: items.map((item) => ({
+                        equipment_unit: {
+                            connect: {
+                                id: item.equipment_unit_id,
+                            },
+                        },
+                        created_at: BigInt(Date.now()),
+                    })),
+                },
+            },
+            include: {
+                items: {
+                    include: {
+                        equipment_unit: true,
+                    },
+                },
             },
         });
     }

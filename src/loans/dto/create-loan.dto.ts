@@ -1,13 +1,16 @@
 import { LoanStatus } from '@prisma/client';
-import { Transform } from 'class-transformer';
+import { Transform, Type } from 'class-transformer';
 import {
+    IsArray,
     IsDateString,
     IsEnum,
     IsNotEmpty,
     IsOptional,
     IsString,
     IsUUID,
+    ValidateNested,
 } from 'class-validator';
+import { CreateLoanItemDto } from './create-loan-item.dto';
 
 export class CreateLoanDto {
     @Transform(({ value }) =>
@@ -45,4 +48,9 @@ export class CreateLoanDto {
     @IsDateString()
     @IsOptional()
     returned_at?: bigint;
+
+    @IsArray()
+    @ValidateNested({ each: true })
+    @Type(() => CreateLoanItemDto)
+    items: CreateLoanItemDto[];
 }

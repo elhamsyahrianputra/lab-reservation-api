@@ -1,23 +1,29 @@
 // src/common/utils/validation.factory.ts
 import {
-  BadRequestException,
-  UnprocessableEntityException,
-  ValidationError,
+    BadRequestException,
+    UnprocessableEntityException,
+    ValidationError,
 } from '@nestjs/common';
 
+function extractErrors(errors: ValidationError[]) {
+    const result = {};
+    errors.forEach((err) => {
+        if (err.constraints) {
+            result[err.property] = Object.values(err.constraints);
+        }
+        if (err.children && err.children.length > 0) {
+            result[err.property] = extractErrors(err.children);
+        }
+    });
+    return result;
+}
+
 export const validationExceptionFactory = (errors: ValidationError[]) => {
-  const formattedErrors = {};
+    const formattedErrors = extractErrors(errors);
 
-  errors.forEach((err: any) => {
-    // 'property' adalah nama field yang error (e.g., "name", "location")
-    // 'constraints' adalah objek berisi pesan-pesan error untuk field tersebut
-    formattedErrors[err.property] = Object.values(err.constraints);
-  });
-
-  // Kembalikan error dengan payload yang sudah kita format
-  return new UnprocessableEntityException({
-    status: 'UNPROCESSABLE_ENTITY',
-    message: 'The given data was invalid.', // Pesan generik
-    errors: formattedErrors, // Objek error kita yang terstruktur
-  });
+    return new UnprocessableEntityException({
+        status: 'UNPROCESSABLE_ENTITY',
+        message: 'The given data was invalid.',
+        errors: formattedErrors,
+    });
 };
